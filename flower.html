@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>For My Tulip</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .flower-container {
+      position: absolute;
+      width: 300px;
+      height: 400px;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .stem {
+      position: absolute;
+      width: 12px;
+      height: 0;
+      background: linear-gradient(to right, #2a5c2a, #3a8a3a, #2a5c2a);
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 6px;
+      animation: growStem 3s forwards;
+      z-index: 0;
+    }
+
+    .leaf {
+      position: absolute;
+      width: 80px;
+      height: 40px;
+      background: linear-gradient(to right, #3a8a3a, #4CAF50, #3a8a3a);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      transform-origin: left center;
+      opacity: 0;
+      z-index: 0;
+    }
+
+    .leaf.left {
+      left: 50%;
+      bottom: 100px;
+      transform: rotate(-20deg) scale(0);
+      animation: growLeafLeft 2s 2.5s forwards;
+    }
+
+    .leaf.right {
+      left: 50%;
+      bottom: 180px;
+      transform: rotate(20deg) scale(0);
+      animation: growLeafRight 2s 3s forwards;
+    }
+
+    .flower {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      left: 50%;
+      bottom: 250px;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+
+    .petal {
+      position: absolute;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      transform-origin: center bottom;
+      opacity: 0;
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
+    }
+
+    .center {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle, #f9d423, #e65c00);
+      border-radius: 50%;
+      left: 50%;
+      bottom: 250px;
+      transform: translateX(-50%) scale(0);
+      opacity: 0;
+      animation: growCenter 2s 4s forwards;
+      box-shadow: 0 0 20px #f9d423, 0 0 40px rgba(249, 212, 35, 0.5);
+      z-index: 3;
+    }
+
+    .firefly {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background-color: #f9d423;
+      border-radius: 50%;
+      filter: blur(1px);
+      box-shadow: 0 0 5px 2px #f9d423;
+      opacity: 0;
+    }
+
+    .message {
+      position: absolute;
+      color: white;
+      text-align: center;
+      width: 100%;
+      top: 20px;
+      opacity: 0;
+      animation: fadeIn 2s 6s forwards;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+      font-size: 24px;
+      font-style: italic;
+    }
+
+    /* Couple animation styles */
+    .couple-container {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.8);
+      opacity: 0;
+      animation: fadeInScale 2s 7s forwards;
+      z-index: 4;
+    }
+
+    .person {
+      position: absolute;
+      width: 80px;
+      height: 160px;
+      bottom: 0;
+      transition: all 0.5s ease;
+    }
+
+    .person-1 {
+      left: 0;
+    }
+
+    .person-2 {
+      right: 0;
+    }
+
+    .head {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: #FFDBAC;
+      border-radius: 50%;
+      top: 0;
+      left: 15px;
+      z-index: 2;
+      box-shadow: inset -5px -5px 10px rgba(0,0,0,0.1);
+    }
+
+    .person-2 .head {
+      left: 15px;
+    }
+
+    .face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .eye {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #333;
+      border-radius: 50%;
+      top: 20px;
+    }
+
+    .person-1 .eye.left {
+      left: 10px;
+    }
+
+    .person-1 .eye.right {
+      right: 10px;
+    }
+
+    .person-2 .eye.left {
+      left: 10px;
+    }
+
+    .person-2 .eye.right {
+      right: 10px;
+    }
+
+    .blush {
+      position: absolute;
+      width: 10px;
+      height: 5px;
+      background: rgba(255,150,150,0.4);
+      border-radius: 50%;
+      top: 25px;
+    }
+
+    .person-1 .blush.left {
+      left: 5px;
+    }
+
+    .person-1 .blush.right {
+      right: 5px;
+    }
+
+    .person-2 .blush.left {
+      left: 5px;
+    }
+
+    .person-2 .blush.right {
+      right: 5px;
+    }
+
+    .mouth {
+      position: absolute;
+      width: 15px;
+      height: 5px;
+      background: #333;
+      border-radius: 0 0 10px 10px;
+      top: 35px;
+      left: 17px;
+      transition: all 0.3s ease;
+    }
+
+    .body {
+      position: absolute;
+      width: 40px;
+      height: 80px;
+      background: #5D8BF4;
+      top: 45px;
+      left: 20px;
+      border-radius: 15px 15px 0 0;
+      z-index: 1;
+    }
+
+    .person-2 .body {
+      background: #FF6B8B;
+    }
+
+    .arm {
+      position: absolute;
+      width: 10px;
+      height: 40px;
+      background: #FFDBAC;
+      top: 50px;
+      z-index: 0;
+    }
+
+    .person-1 .arm.left {
+      left: 10px;
+      transform-origin: top center;
+      transform: rotate(20deg);
+    }
+
+    .person-1 .arm.right {
+      right: 10px;
+      transform-origin: top center;
+      transform: rotate(-20deg);
+    }
+
+    .person-2 .arm.left {
+      left: 10px;
+      transform-origin: top center;
+      transform: rotate(20deg);
+    }
+
+    .person-2 .arm.right {
+      right: 10px;
+      transform-origin: top center;
+      transform: rotate(-20deg);
+    }
+
+    .heart {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: #ff0000;
+      transform: rotate(-45deg);
+      top: 70px;
+      left: 95px;
+      animation: heartbeat 1.5s infinite;
+      opacity: 0;
+      z-index: 5;
+      filter: drop-shadow(0 0 5px rgba(255,0,0,0.7));
+    }
+
+    .heart:before,
+    .heart:after {
+      content: "";
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: #ff0000;
+      border-radius: 50%;
+    }
+
+    .heart:before {
+      top: -15px;
+      left: 0;
+    }
+
+    .heart:after {
+      top: 0;
+      left: 15px;
+    }
+
+    .kiss-effect {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 50%;
+      filter: blur(2px);
+      opacity: 0;
+      z-index: 3;
+    }
+
+    .love-bubble {
+      position: absolute;
+      color: white;
+      font-size: 14px;
+      opacity: 0;
+      animation: floatUp 3s ease-out forwards;
+      text-shadow: 0 0 3px rgba(255,0,0,0.8);
+    }
+
+    @keyframes heartbeat {
+      0% { transform: rotate(-45deg) scale(0.8); }
+      50% { transform: rotate(-45deg) scale(1.1); }
+      100% { transform: rotate(-45deg) scale(0.8); }
+    }
+
+    @keyframes coupleKiss {
+      0% { transform: translateX(0) translateY(0); }
+      50% { transform: translateX(5px) translateY(-5px); }
+      100% { transform: translateX(0) translateY(0); }
+    }
+
+    @keyframes coupleKiss2 {
+      0% { transform: translateX(0) translateY(0); }
+      50% { transform: translateX(-5px) translateY(-5px); }
+      100% { transform: translateX(0) translateY(0); }
+    }
+
+    @keyframes kissMouth {
+      0% { height: 5px; border-radius: 0 0 10px 10px; }
+      50% { height: 3px; width: 3px; border-radius: 50%; }
+      100% { height: 5px; border-radius: 0 0 10px 10px; }
+    }
+
+    @keyframes fadeInScale {
+      0% { opacity: 0; transform: translateX(-50%) scale(0.8); }
+      100% { opacity: 1; transform: translateX(-50%) scale(1); }
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-100px); opacity: 0; }
+    }
+
+    @keyframes growStem {
+      to {
+        height: 250px;
+      }
+    }
+
+    @keyframes growLeafLeft {
+      to {
+        transform: rotate(-20deg) scale(1);
+        opacity: 0.8;
+      }
+    }
+
+    @keyframes growLeafRight {
+      to {
+        transform: rotate(20deg) scale(1);
+        opacity: 0.8;
+      }
+    }
+
+    @keyframes growCenter {
+      to {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes glow {
+      0%, 100% {
+        box-shadow: 0 0 5px 2px #f9d423;
+      }
+      50% {
+        box-shadow: 0 0 10px 4px #f9d423;
+      }
+    }
+
+    @keyframes petalWobble {
+      0%, 100% { transform: translateX(-50%) rotate(var(--angle)) translateY(-40px) scale(1) rotate(0deg); }
+      50% { transform: translateX(-50%) rotate(var(--angle)) translateY(-40px) scale(1.05) rotate(2deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="message">For the most beautiful flower in my life...</div>
+    <div class="flower-container">
+      <div class="stem"></div>
+      <div class="leaf left"></div>
+      <div class="leaf right"></div>
+      <div class="flower" id="flower"></div>
+      <div class="center"></div>
+    </div>
+    <div class="couple-container" id="couple">
+        <div class="person person-1">
+          <div class="head">
+            <div class="face">
+              <div class="eye left"></div>
+              <div class="eye right"></div>
+              <div class="blush left"></div>
+              <div class="blush right"></div>
+              <div class="mouth" id="mouth1"></div>
+            </div>
+          </div>
+          <div class="arm left"></div>
+          <div class="arm right"></div>
+          <div class="body"></div>
+          <div class="name-label">Kaustav</div>
+        </div>
+        <div class="person person-2">
+          <div class="head">
+            <div class="face">
+              <div class="eye left"></div>
+              <div class="eye right"></div>
+              <div class="blush left"></div>
+              <div class="blush right"></div>
+              <div class="mouth" id="mouth2"></div>
+            </div>
+          </div>
+          <div class="arm left"></div>
+          <div class="arm right"></div>
+          <div class="body"></div>
+          <div class="name-label">Sagorika</div>
+        </div>
+        <div class="heart" id="heart"></div>
+      </div>
+    </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const flower = document.getElementById('flower');
+      const couple = document.getElementById('couple');
+      const heart = document.getElementById('heart');
+      const mouth1 = document.getElementById('mouth1');
+      const mouth2 = document.getElementById('mouth2');
+
+      const tulipColor1 = 'rgba(255, 182, 193, 0.9)';
+      const tulipColor2 = 'rgba(255, 105, 180, 0.9)';
+
+      // Create more realistic tulip petals
+      for (let i = 0; i < 6; i++) {
+        const petal = document.createElement('div');
+        petal.className = 'petal';
+
+        const width = 40 + Math.random() * 10;
+        const height = 80 + Math.random() * 20;
+        const angle = i * (360 / 6);
+        const colorVariation = Math.random() * 0.2 - 0.1;
+        const petalColor1 = `rgba(${255}, ${182 + colorVariation * 255}, ${193 + colorVariation * 255}, 0.9)`;
+        const petalColor2 = `rgba(${255}, ${105 + colorVariation * 255}, ${180 + colorVariation * 255}, 0.9)`;
+
+        petal.style.width = `${width}px`;
+        petal.style.height = `${height}px`;
+        petal.style.background = `linear-gradient(to bottom, ${petalColor1}, ${petalColor2})`;
+        petal.style.setProperty('--angle', `${angle}deg`);
+
+        petal.style.position = 'absolute';
+        petal.style.left = '50%';
+        petal.style.bottom = '0';
+        petal.style.transformOrigin = 'center bottom';
+        petal.style.transform = `translateX(-50%) rotate(${angle}deg) translateY(-40px) scale(0.1)`;
+
+        setTimeout(() => {
+          petal.style.opacity = '1';
+          petal.style.transition = 'all 1.5s ease-out';
+          petal.style.transform = `translateX(-50%) rotate(${angle}deg) translateY(-40px) scale(1)`;
+          
+          // Add subtle wobble animation after petals bloom
+          setTimeout(() => {
+            petal.style.animation = 'petalWobble 3s infinite ease-in-out';
+          }, 2000);
+        }, 3000 + i * 200);
+
+        flower.appendChild(petal);
+      }
+
+      // Create fireflies
+      for (let i = 0; i < 20; i++) {
+        createFirefly();
+      }
+
+      function createFirefly() {
+        const firefly = document.createElement('div');
+        firefly.className = 'firefly';
+
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight * 0.8;
+
+        const size = 2 + Math.random() * 3;
+        firefly.style.left = `${x}px`;
+        firefly.style.top = `${y}px`;
+        firefly.style.width = `${size}px`;
+        firefly.style.height = `${size}px`;
+        firefly.style.opacity = 0.3 + Math.random() * 0.7;
+
+        document.querySelector('.container').appendChild(firefly);
+        animateFirefly(firefly);
+      }
+
+      function animateFirefly(firefly) {
+        const duration = 5000 + Math.random() * 10000;
+        const delay = Math.random() * 2000;
+
+        const startX = parseFloat(firefly.style.left);
+        const startY = parseFloat(firefly.style.top);
+        const endX = startX + (Math.random() * 200 - 100);
+        const endY = startY + (Math.random() * 100 - 150);
+
+        firefly.style.animation = `glow ${2 + Math.random() * 3}s infinite ease-in-out`;
+
+        const keyframes = [
+          { transform: `translate(0, 0)`, opacity: firefly.style.opacity },
+          { transform: `translate(${endX - startX}px, ${endY - startY}px)`, opacity: 0 }
+        ];
+
+        const options = {
+          duration: duration,
+          delay: delay,
+          fill: 'forwards'
+        };
+
+        firefly.animate(keyframes, options).onfinish = () => {
+          firefly.style.left = `${Math.random() * window.innerWidth}px`;
+          firefly.style.top = `${Math.random() * window.innerHeight * 0.8}px`;
+          animateFirefly(firefly);
+        };
+      }
+
+      setTimeout(() => {
+        addLeafDetails();
+      }, 4000);
+
+      // Animate the couple
+      setTimeout(() => {
+        const person1 = document.querySelector('.person-1 .head');
+        const person2 = document.querySelector('.person-2 .head');
+        
+        // Start head movements
+        person1.style.animation = 'coupleKiss 2s infinite ease-in-out';
+        person2.style.animation = 'coupleKiss2 2s infinite ease-in-out';
+        
+        // Animate mouths for kissing
+        mouth1.style.animation = 'kissMouth 2s infinite ease-in-out';
+        mouth2.style.animation = 'kissMouth 2s infinite ease-in-out';
+        
+        // Show heart with delay
+        setTimeout(() => {
+          heart.style.opacity = '1';
+          
+          // Create kiss effects periodically
+          setInterval(createKissEffect, 2000);
+          
+          // Create floating love bubbles
+          setInterval(createLoveBubble, 3000);
+        }, 1000);
+        
+        // Make arms hug each other
+        setTimeout(() => {
+          document.querySelector('.person-1 .arm.right').style.transform = 'rotate(45deg)';
+          document.querySelector('.person-2 .arm.left').style.transform = 'rotate(-45deg)';
+        }, 500);
+      }, 7500);
+      
+      function createKissEffect() {
+        const kiss = document.createElement('div');
+        kiss.className = 'kiss-effect';
+        kiss.style.left = '105px';
+        kiss.style.top = '70px';
+        couple.appendChild(kiss);
+        
+        // Animate kiss effect
+        const anim = kiss.animate([
+          { transform: 'scale(0)', opacity: 0 },
+          { transform: 'scale(1.5)', opacity: 0.8 },
+          { transform: 'scale(3)', opacity: 0 }
+        ], {
+          duration: 1000,
+          easing: 'ease-out'
+        });
+        
+        anim.onfinish = () => {
+          kiss.remove();
+        };
+      }
+      
+      function createLoveBubble() {
+        const messages = ["I love you", "Forever", "My heart", "You're mine", "So sweet", "My love"];
+        const bubble = document.createElement('div');
+        bubble.className = 'love-bubble';
+        bubble.textContent = messages[Math.floor(Math.random() * messages.length)];
+        bubble.style.left = `${100 + Math.random() * 40}px`;
+        bubble.style.top = '120px';
+        couple.appendChild(bubble);
+        
+        setTimeout(() => {
+          bubble.remove();
+        }, 3000);
+      }
+    });
+
+    function addLeafDetails() {
+      const leaves = document.querySelectorAll('.leaf');
+      leaves.forEach(leaf => {
+        // Add veins to leaves
+        for (let i = 0; i < 3; i++) {
+          const vein = document.createElement('div');
+          vein.style.position = 'absolute';
+          vein.style.width = '100%';
+          vein.style.height = '1px';
+          vein.style.background = 'linear-gradient(to right, rgba(20, 80, 20, 0.5), rgba(60, 180, 60, 0.8), rgba(20, 80, 20, 0.5))';
+          vein.style.top = `${20 + i * 10}px`;
+          vein.style.left = '0';
+          vein.style.transform = `rotate(${-5 + i * 5}deg)`;
+          vein.style.transformOrigin = 'left center';
+          leaf.appendChild(vein);
+        }
+
+        // Add texture to leaves
+        leaf.style.boxShadow = 'inset 0 0 20px rgba(0, 0, 0, 0.2)';
+        
+        // Add subtle movement to leaves
+        leaf.style.animation = `leafWobble ${3 + Math.random() * 2}s infinite ease-in-out`;
+      });
+    }
+  </script>
+</body>
+</html>
